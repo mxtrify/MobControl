@@ -1,0 +1,46 @@
+# ===== Unity =====
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+[Mm]emoryCaptures/
+sysinfo.txt
+
+# Unity IDE files
+.idea/
+.vscode/
+*.booproj
+*.svd
+*.opendb
+*.mdb
+
+# ===== Visual Studio / .NET =====
+.vs/
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+
+# ===== OS / Editor Junk =====
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# ===== Build Outputs / Archives (keep releases on GitHub) =====
+*.apk
+*.aab
+*.zip
+*.tar
+*.gz
+*.7z
+*.msi
+
+# ===== Logs / Temp =====
+*.log
+*.tmp
+*.temp
+*.swp
