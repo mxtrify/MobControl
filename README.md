@@ -6,7 +6,7 @@ It consists of two main applications:
 - **📱 Mobile App** (Unity 6000.0.37f1, Android)  
 - **🖥️ Desktop App** (WPF, .NET 8, Windows)  
 
-Together, they provide **seamless QR-based pairing**, **secure WebSocket communication**, and **customizable layouts** for multiple players.
+Together, they provide **seamless QR-based pairing**, **offline WebSocket communication**, and **customizable layouts** for multiple players.
 
 ---
 
