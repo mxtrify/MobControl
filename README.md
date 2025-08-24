@@ -73,8 +73,9 @@ mobcontrol/
 
 ## 📦 Releases
 Stable builds (APK + Desktop installer) are published under [GitHub Releases](../../releases).  
-- `MobControl-Desktop-x.y.z.msi` (Windows installer)  
-- `MobControl-Mobile-x.y.z.apk` (Android APK)  
+- `MobControl-Desktop-Setup-1.0.0.exe` (Windows installer)
+- `MobControl-Desktop-1.0.0.msi` (Windows installer)
+- `MobControl-Mobile-1.0.0.apk` (Android APK)  
 
 ---
 
