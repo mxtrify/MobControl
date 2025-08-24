@@ -90,5 +90,5 @@ cd mobcontrol
 
 ## 📚 8. References
 
-- 📄 [User Manual](./user-manual.pdf)  
+- 📄 [User Manual](./User Manual.pdf)  
 - 🗂️ [Architecture Overview](./architecture.md)  

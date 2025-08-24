@@ -77,4 +77,4 @@ flowchart LR
 ## 📚 References
 
 - 📖 [Setup Guide](./setup-guide.md)  
-- 📄 [User Manual](./final-user-manual.pdf)  
+- 📄 [User Manual](./User Manual.pdf)  
