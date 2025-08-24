@@ -1,0 +1,8 @@
+﻿{
+  "up": "Key_W",
+  "down": "Key_S",
+  "left": "Key_A",
+  "right": "Key_D",
+  "a": "LeftClick",
+  "b": "RightClick"
+}

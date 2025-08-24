@@ -1,0 +1,228 @@
+﻿<UserControl x:Class="MobControlUI.MVVM.View.CreateMappingView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MobControlUI.MVVM.View"
+             xmlns:ui="clr-namespace:MobControlUI.Core.UI"
+             mc:Ignorable="d" 
+             d:DesignHeight="400" d:DesignWidth="700">
+
+    <UserControl.Resources>
+        <Style TargetType="{x:Type ui:HotkeyBox}">
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="Padding" Value="6,0"/>
+            <Setter Property="Background" Value="#EDEDED"/>
+            <Setter Property="BorderBrush" Value="#999"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header + Save -->
+        <DockPanel Grid.Row="0" LastChildFill="False" Margin="0,0,0,12">
+            <TextBlock Text="Create New Mapping"
+                       FontSize="22" FontWeight="SemiBold" Foreground="White"
+                       DockPanel.Dock="Left"/>
+            <Button Content="Save"
+                    Width="120" Height="32" Margin="12,0,0,0"
+                    DockPanel.Dock="Right"
+                    Command="{Binding SaveCommand}"
+                    Style="{StaticResource AppButtonSafe}"/>
+            <Button Content="Clear"
+                    Width="120" Height="32" Margin="12,0,0,0"
+                    DockPanel.Dock="Right"
+                    Command="{Binding ClearCommand}"
+                    Style="{StaticResource AppButtonDanger}"/>
+        </DockPanel>
+
+        <!-- Select Layout | Enter Mapping Filename -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="320"/>
+                <ColumnDefinition Width="320"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Select Layout (replicates your Select Mapping / Player ID UX) -->
+            <Grid Grid.Column="0">
+                <ComboBox x:Name="CbLayouts"
+                          ItemsSource="{Binding LayoutChoices}"
+                          SelectedValue="{Binding SelectedLayout, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                          SelectedValuePath="Value"
+                          DisplayMemberPath="Display"
+                          IsEditable="False"
+                          IsTextSearchEnabled="False"
+                          IsSynchronizedWithCurrentItem="False"/>
+                <!-- overlay prompt -->
+                <TextBlock Text="Select Layout"
+                           Margin="8,0,0,0"
+                           VerticalAlignment="Center"
+                           Foreground="#9AA0A6"
+                           IsHitTestVisible="False"
+                           Panel.ZIndex="1">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding SelectedValue, ElementName=CbLayouts}" Value="{x:Null}"/>
+                                        <Condition Binding="{Binding IsDropDownOpen, ElementName=CbLayouts}" Value="False"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Grid>
+
+            <!-- Enter Mapping Filename (keep/remove handlers as needed) -->
+            <Grid Grid.Column="1" Margin="16,0,0,0">
+                <TextBox x:Name="TbFileName"
+                         Text="{Binding FileName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         PreviewTextInput="FileName_PreviewTextInput"
+                         DataObject.Pasting="FileName_OnPaste"/>
+                <TextBlock Text="Enter Mapping Filename"
+                           Margin="8,0,0,0"
+                           VerticalAlignment="Center"
+                           Foreground="#9AA0A6"
+                           IsHitTestVisible="False"
+                           Panel.ZIndex="1">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding Text, ElementName=TbFileName}" Value=""/>
+                                        <Condition Binding="{Binding IsKeyboardFocused, ElementName=TbFileName}" Value="False"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Grid>
+        </Grid>
+
+        <!-- Actions box -->
+        <Border Grid.Row="2"
+                Margin="0,16,0,0"
+                CornerRadius="10"
+                Background="#2F2F35"
+                BorderBrush="#444A55"
+                BorderThickness="1"
+                Padding="12"
+                SnapsToDevicePixels="True"
+                ClipToBounds="True">
+
+            <Grid>
+                <!-- Placeholder when no actions -->
+                <TextBlock Text="Please select a layout first."
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Foreground="#9AA0A6">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HasActions}" Value="False">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+
+                <!-- Action rows (top-down) -->
+                <ScrollViewer VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled">
+                    <ItemsControl ItemsSource="{Binding ActionRows}" VerticalAlignment="Top">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Vertical"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,8,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="260"/>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Grid.ColumnSpan="3"
+                                            Background="#3A3A40"
+                                            CornerRadius="6"
+                                            Height="44"/>
+
+                                    <TextBlock Grid.Column="0"
+                                               Margin="12,0,0,0"
+                                               VerticalAlignment="Center"
+                                               Foreground="White"
+                                               Text="{Binding ActionName, StringFormat=action: {0}}"/>
+                                    <TextBlock Grid.Column="1"/>
+
+                                    <!-- Hotkey capture with watermark -->
+                                    <Grid Grid.Column="2" Margin="0,0,12,0">
+                                        <ui:HotkeyBox x:Name="HK"
+                                                      VerticalContentAlignment="Center"
+                                                      Value="{Binding KeyBinding, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                      AllowKeyboard="True"
+                                                      AllowMouseButtons="True"
+                                                      AllowMouseWheel="True"
+                                                      ToolTip="Click, then press a key or mouse. Backspace/Delete to clear." />
+
+                                        <!-- non-blocking placeholder -->
+                                        <TextBlock Text="Click, then press a key or mouse"
+                                                   Margin="8,0,0,0"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="#9AA0A6"
+                                                   IsHitTestVisible="False"
+                                                   Panel.ZIndex="1">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <!-- show when no value (null) and not focused -->
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding Value, ElementName=HK}" Value="{x:Null}"/>
+                                                                <Condition Binding="{Binding IsKeyboardFocused, ElementName=HK}" Value="False"/>
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </MultiDataTrigger>
+                                                        <!-- also show when empty string -->
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding Value, ElementName=HK}" Value=""/>
+                                                                <Condition Binding="{Binding IsKeyboardFocused, ElementName=HK}" Value="False"/>
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </MultiDataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </Grid>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

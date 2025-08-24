@@ -1,0 +1,211 @@
+﻿<UserControl x:Class="MobControlUI.MVVM.View.ControllerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:local="clr-namespace:MobControlUI.MVVM.View"
+             xmlns:viewModel="clr-namespace:MobControlUI.MVVM.ViewModel"
+             mc:Ignorable="d"
+             d:DesignHeight="400" d:DesignWidth="700">
+
+    <UserControl.Resources>
+        <!-- Box for the scroll area -->
+        <Style x:Key="DevicesBox" TargetType="Border">
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Background" Value="#2F2F35"/>
+            <Setter Property="BorderBrush" Value="#444A55"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="ClipToBounds" Value="True"/>
+        </Style>
+
+        <!-- Row look -->
+        <Style x:Key="DeviceRowBorder" TargetType="Border">
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Background" Value="#4A4A4A"/>
+            <Setter Property="Padding" Value="14"/>
+            <Setter Property="Margin" Value="0,10,0,0"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Connected Devices"
+                   FontSize="22"
+                   FontWeight="SemiBold"
+                   Foreground="White"
+                   Margin="4,0,0,12"/>
+
+        <!-- Scrollable, virtualized device list (ListBox hosts its own ScrollViewer, so your ScrollbarTheme applies) -->
+        <Border Grid.Row="1" Style="{StaticResource DevicesBox}" MaxHeight="380">
+            <Grid>
+                <ListBox x:Name="DevicesList"
+                         ItemsSource="{Binding Devices}"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         ScrollViewer.CanContentScroll="True"
+                         VirtualizingStackPanel.IsVirtualizing="True"
+                         VirtualizingStackPanel.VirtualizationMode="Recycling"
+                         SelectionMode="Single">
+                    <!-- Make rows stretch horizontally and remove selection chrome -->
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="Padding" Value="0"/>
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Focusable" Value="False"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <Border x:Name="Bd"
+                                                Background="{TemplateBinding Background}"
+                                                SnapsToDevicePixels="True">
+                                            <ContentPresenter />
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <!-- keep background transparent on hover/selection -->
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="Bd" Property="Background" Value="Transparent"/>
+                                            </Trigger>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter TargetName="Bd" Property="Background" Value="Transparent"/>
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter TargetName="Bd" Property="Opacity" Value="0.6"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Style="{StaticResource DeviceRowBorder}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Device label -->
+                                    <TextBlock Grid.Column="0"
+                                               Text="{Binding DeviceName}"
+                                               VerticalAlignment="Center"
+                                               Foreground="White"
+                                               FontSize="16"/>
+
+                                    <!-- Mapping: bind-by-value + non-blocking prompt -->
+                                    <Grid Grid.Column="1" Width="220" Margin="10,0">
+                                        <ComboBox x:Name="CbMapping"
+                                                  ItemsSource="{Binding MappingChoices}"
+                                                  SelectedValue="{Binding SelectedMapping, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                  SelectedValuePath="Value"
+                                                  DisplayMemberPath="Display"
+                                                  IsEditable="False"
+                                                  IsTextSearchEnabled="False"
+                                                  IsSynchronizedWithCurrentItem="False"/>
+
+                                        <!-- Prompt shows when no mapping selected -->
+                                        <TextBlock Text="Select Mapping"
+                                                   Margin="8,0,0,0"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="#9AA0A6"
+                                                   IsHitTestVisible="False"
+                                                   Panel.ZIndex="1">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding SelectedValue, ElementName=CbMapping}" Value="{x:Null}"/>
+                                                                <Condition Binding="{Binding IsDropDownOpen, ElementName=CbMapping}" Value="False"/>
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </MultiDataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </Grid>
+
+                                    <!-- Player ID: bind-by-value + non-blocking prompt -->
+                                    <Grid Grid.Column="2" Width="180" Margin="10,0">
+                                        <ComboBox x:Name="CbPlayer"
+                                                  ItemsSource="{Binding PlayerIdChoices}"
+                                                  SelectedValue="{Binding PlayerId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                  SelectedValuePath="Value"
+                                                  DisplayMemberPath="Display"
+                                                  IsEditable="False"
+                                                  IsTextSearchEnabled="False"
+                                                  IsSynchronizedWithCurrentItem="False"/>
+
+                                        <!-- Prompt shows when no player selected -->
+                                        <TextBlock Text="Select Player ID"
+                                                   Margin="8,0,0,0"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="#9AA0A6"
+                                                   IsHitTestVisible="False"
+                                                   Panel.ZIndex="1">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding SelectedValue, ElementName=CbPlayer}" Value="{x:Null}"/>
+                                                                <Condition Binding="{Binding IsDropDownOpen, ElementName=CbPlayer}" Value="False"/>
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </MultiDataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </Grid>
+
+                                    <!-- Disconnect -->
+                                    <Button Grid.Column="3"
+                                            Content="X"
+                                            Width="34" Height="28"
+                                            Margin="10,0,0,0"
+                                            Command="{Binding DisconnectCommand}"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <!-- Empty-state overlay -->
+                <TextBlock Text="No devices connected"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Foreground="#9AA0A6">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HasItems, ElementName=DevicesList}" Value="False">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

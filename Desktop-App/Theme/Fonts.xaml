@@ -1,0 +1,8 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <FontFamily x:Key="Jersey10">pack://application:,,,/Fonts/#Jersey 10</FontFamily>
+    <FontFamily x:Key="Jersey25">pack://application:,,,/Fonts/#Jersey 25</FontFamily>
+    <FontFamily x:Key="DotoR">pack://application:,,,/Fonts/#Doto Rounded</FontFamily>    
+
+</ResourceDictionary>
