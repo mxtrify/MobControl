@@ -58,7 +58,7 @@ mobcontrol/
 
 - 📚 [Setup Guide](./docs/setup-guide.md) — step-by-step installation  
 - 🏗️ [Architecture Overview](./docs/architecture.md) — high-level design & flow  
-- 📄 [User Manual](./docs/User Manual.pdf) — detailed usage  
+- 📄 [User Manual](./docs/User%20Manual.pdf) — detailed usage  
 
 ---
 
