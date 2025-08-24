@@ -58,13 +58,13 @@ mobcontrol/
 
 - 📚 [Setup Guide](./docs/setup-guide.md) — step-by-step installation  
 - 🏗️ [Architecture Overview](./docs/architecture.md) — high-level design & flow  
-- 📄 [Final User Manual](./docs/final-user-manual.pdf) — detailed usage  
+- 📄 [User Manual](./docs/User Manual.pdf) — detailed usage  
 
 ---
 
 ## 🔐 Key Features
 - Seamless **QR-based pairing** with unique session tokens  
-- **TLS-secured WebSocket** communication on port 8181  
+- Works **offline on local LAN** using WebSocket
 - Supports multiple mobile devices with isolated sessions  
 - Flexible **JSON-based controller layouts**  
 - Future support for accelerometer/motion input  
