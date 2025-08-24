@@ -17,7 +17,7 @@ mobcontrol/
 ├─ mobile-app/       # Unity project (Android build)
 ├─ desktop-app/      # WPF / .NET 8 project (Windows)
 ├─ docs/             # Documentation
-│  ├─ final-user-manual.pdf
+│  ├─ User Manual.pdf
 │  ├─ setup-guide.md
 │  └─ architecture.md
 ├─ .gitignore
